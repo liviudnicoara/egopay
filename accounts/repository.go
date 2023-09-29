@@ -11,6 +11,8 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 
 	"github.com/pkg/errors"
+
+	"github.com/liviudnicoara/egopay/pkg/filesystem"
 )
 
 type AccountRepository interface {
@@ -24,6 +26,8 @@ type accountRepository struct {
 }
 
 func NewAccountRepository(keyStorePath string) AccountRepository {
+	_ = filesystem.CreateDirectoryIfNotExists(keyStorePath)
+
 	keyStore := keystore.NewKeyStore(keyStorePath, keystore.StandardScryptN, keystore.StandardScryptP)
 
 	return &accountRepository{

@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
+	"github.com/liviudnicoara/egopay/pkg/filesystem"
 	"github.com/pkg/errors"
 )
 
@@ -24,6 +25,7 @@ type userRepository struct {
 }
 
 func NewUserRepository(storagePath string) UserRepository {
+	_ = filesystem.CreateDirectoryIfNotExists(storagePath)
 	storageFilePath := filepath.Join(storagePath, "users.json")
 
 	if _, err := os.Stat(storageFilePath); err != nil {
