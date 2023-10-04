@@ -87,7 +87,7 @@ func (s *userService) AddAccount(userID uuid.UUID, password string) (string, err
 	user.AccountAddresses = append(user.AccountAddresses, accountAddress)
 	err := s.userRepository.Save(user)
 	if err != nil {
-		return "", errors.WithMessagef(err, "could save account for user: %s", userID)
+		return "", errors.WithMessagef(err, "could not save account for user: %s", userID)
 	}
 
 	return accountAddress, nil
