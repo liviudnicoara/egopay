@@ -12,7 +12,7 @@ library ETHToUSDConverter {
         );
 
         (, int256 answer, , , ) = priceFeed.latestRoundData();
-    
+
         if (answer == 0) {
             // Handle the error: return a default value or throw an error
             return 0; // or throw an error
@@ -22,8 +22,9 @@ library ETHToUSDConverter {
         return uint256(answer * 1e10);
     }
 
-    
-    function convertETHToUSD(uint256 ethAmount) internal view returns (uint256) {
+    function convertETHToUSD(
+        uint256 ethAmount
+    ) internal view returns (uint256) {
         uint256 ethPrice = getETHPriceInUSD();
         uint256 ethAmountInUsd = (ethPrice * ethAmount) / 1e18;
         // the actual ETH/USD conversion rate, after adjusting the extra 0s.
@@ -33,7 +34,7 @@ library ETHToUSDConverter {
     // function convertUSDToETH(uint256 amount) internal view returns (uint256) {
     //     uint256 ethPrice = getETHPriceInUSD(); // ETH/USD
     //     //USD /ETH
-    //     // 1722 * 10**18 
+    //     // 1722 * 10**18
     //     uint256 usdToEthRate = (1e18 * 1e18) / ethPrice;
     //     uint256 ethAmount = amount * usdToEthRate;
     //     // the actual ETH/USD conversion rate, after adjusting the extra 0s.
