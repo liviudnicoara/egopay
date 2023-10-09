@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/liviudnicoara/egopay/accounts"
+	"github.com/liviudnicoara/egopay/internal/accounts"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/sync/errgroup"

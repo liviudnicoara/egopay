@@ -6,8 +6,8 @@ import (
 	"log"
 
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/liviudnicoara/egopay/accounts"
-	"github.com/liviudnicoara/egopay/bills"
+	"github.com/liviudnicoara/egopay/internal/accounts"
+	"github.com/liviudnicoara/egopay/internal/bills"
 )
 
 const ALCHEMY_TEST_URL = "https://eth-sepolia.g.alchemy.com/v2/w0uQJ2Oimfqh8H-ibuWNhP7dhv7cjeqs"

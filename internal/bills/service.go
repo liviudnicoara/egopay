@@ -8,8 +8,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/liviudnicoara/egopay/accounts"
-	"github.com/liviudnicoara/egopay/contracts"
+	"github.com/liviudnicoara/egopay/internal/accounts"
+	"github.com/liviudnicoara/egopay/internal/contracts"
 	"github.com/pkg/errors"
 )
 

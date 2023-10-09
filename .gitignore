@@ -7,7 +7,7 @@
 *.dll
 *.so
 *.dylib
-egopay
+cmd/cmd
 
 # Test binary, built with `go test -c`
 *.test
