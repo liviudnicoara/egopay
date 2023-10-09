@@ -4,9 +4,14 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math/big"
 
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/liviudnicoara/egopay/accounts"
+	contracts "github.com/liviudnicoara/egopay/contracts"
 )
 
 const ALCHEMY_TEST_URL = "https://eth-sepolia.g.alchemy.com/v2/w0uQJ2Oimfqh8H-ibuWNhP7dhv7cjeqs"
@@ -51,9 +56,9 @@ func main() {
 
 	// user, err := us.Register("test", "pass")
 	// ad, err := us.AddAccount(uuid.MustParse("77e34f97-cea3-4278-9570-20dc309d3a51"), "pass")
-	b, err := as.GetBalance(context.Background(), "0xCf9a951E338A3663804b5499706dc50A79AE908A")
-	fmt.Println(b.Float64())
-	fmt.Println(err)
+	// b, err := as.GetBalance(context.Background(), "0xCf9a951E338A3663804b5499706dc50A79AE908A")
+	// fmt.Println(b.Float64())
+	// fmt.Println(err)
 
 	// ts := transfers.NewTransferService(as, client)
 	// amount := big.NewFloat(0.01)
@@ -63,6 +68,44 @@ func main() {
 	// b, err = as.GetBalance(context.Background(), "0xCf9a951E338A3663804b5499706dc50A79AE908A")
 	// fmt.Println(b)
 	// fmt.Println(err)
+
+	// Deploy contract
+	// account, err := as.GetAccount("0xCf9a951E338A3663804b5499706dc50A79AE908A", "Ceparola123!")
+	account, err := as.GetAccount("0xCf9a951E338A3663804b5499706dc50A79AE908A", "pass")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	nounce, err := client.PendingNonceAt(context.Background(), crypto.PubkeyToAddress(account.PrivateKey.PublicKey))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	chainID, err := client.NetworkID(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	auth, err := bind.NewKeyedTransactorWithChainID(account.PrivateKey, chainID)
+	auth.Nonce = big.NewInt(int64(nounce))
+	auth.GasPrice = gasPrice
+	auth.GasLimit = uint64(3000000)
+
+	payers := []common.Address{crypto.PubkeyToAddress(account.PrivateKey.PublicKey)}
+	amount := big.NewInt(100)
+	address, tx, instance, err := contracts.DeploySplitBill(auth, client, payers, amount)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(address)
+	fmt.Println(tx.Hash().Hex())
+	_ = instance
 
 }
 
