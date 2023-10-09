@@ -14,7 +14,7 @@ import (
 
 const GAS_LIMIT = 21000
 
-type TrasnferService interface {
+type TransferService interface {
 	Transfer(ctx context.Context, from string, to string, amount *big.Float, password string) error
 }
 
@@ -24,7 +24,7 @@ type transferService struct {
 	chainID        *big.Int
 }
 
-func NewTransferService(accountService accounts.AccountService, client *ethclient.Client) TrasnferService {
+func NewTransferService(accountService accounts.AccountService, client *ethclient.Client) TransferService {
 	chainID, err := client.NetworkID(context.Background())
 
 	if err != nil {

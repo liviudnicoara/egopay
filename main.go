@@ -4,14 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"math/big"
 
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/liviudnicoara/egopay/accounts"
-	contracts "github.com/liviudnicoara/egopay/contracts"
+	"github.com/liviudnicoara/egopay/bills"
 )
 
 const ALCHEMY_TEST_URL = "https://eth-sepolia.g.alchemy.com/v2/w0uQJ2Oimfqh8H-ibuWNhP7dhv7cjeqs"
@@ -71,87 +67,11 @@ func main() {
 
 	// Deploy contract
 	// account, err := as.GetAccount("0xCf9a951E338A3663804b5499706dc50A79AE908A", "Ceparola123!")
-	account, err := as.GetAccount("0xCf9a951E338A3663804b5499706dc50A79AE908A", "pass")
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	nounce, err := client.PendingNonceAt(context.Background(), crypto.PubkeyToAddress(account.PrivateKey.PublicKey))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	gasPrice, err := client.SuggestGasPrice(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	chainID, err := client.NetworkID(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	auth, err := bind.NewKeyedTransactorWithChainID(account.PrivateKey, chainID)
-	auth.Nonce = big.NewInt(int64(nounce))
-	auth.GasPrice = gasPrice
-	auth.GasLimit = uint64(3000000)
-
-	payers := []common.Address{crypto.PubkeyToAddress(account.PrivateKey.PublicKey)}
-	amount := big.NewInt(100)
-	address, tx, instance, err := contracts.DeploySplitBill(auth, client, payers, amount)
-	if err != nil {
-		log.Fatal(err)
-	}
+	bs := bills.NewBillService(as, client)
+	address, tx, err := bs.Split(context.Background(), "0xCf9a951E338A3663804b5499706dc50A79AE908A", 100, "pass")
 
 	fmt.Println(address)
-	fmt.Println(tx.Hash().Hex())
-	_ = instance
+	fmt.Println(tx)
 
 }
-
-// func createNewWallet() (string, string, string, error) {
-// 	pvk, err := crypto.GenerateKey()
-// 	if err != nil {
-// 		return "", "", "", err
-// 	}
-
-// 	binaryPVK := crypto.FromECDSA(pvk)
-// 	encodedPVK := hexutil.Encode(binaryPVK)
-
-// 	binaryPBK := crypto.FromECDSAPub(&pvk.PublicKey)
-// 	encodedPBK := hexutil.Encode(binaryPBK)
-
-// 	address := crypto.PubkeyToAddress(pvk.PublicKey).Hex()
-
-// 	return encodedPVK, encodedPBK, address, nil
-// }
-
-// func createNewKeyStoreWallet(password string) error {
-// 	ks := keystore.NewKeyStore("./wallet", keystore.StandardScryptN, keystore.StandardScryptP)
-// 	_, err := ks.NewAccount(password)
-
-// 	return err
-// }
-
-// func getWallet(password string) (string, string, string, error) {
-// 	f, err := os.ReadFile("./wallet/UTC--2023-09-28T12-16-40.596555300Z--ca1d3dd253cade17ee7af14cb3a0c9c7cd49a509")
-// 	if err != nil {
-// 		return "", "", "", err
-// 	}
-
-// 	ks, err := keystore.DecryptKey(f, password)
-
-// 	if err != nil {
-// 		return "", "", "", err
-// 	}
-
-// 	binaryPVK := crypto.FromECDSA(ks.PrivateKey)
-// 	encodedPVK := hexutil.Encode(binaryPVK)
-
-// 	binaryPBK := crypto.FromECDSAPub(&ks.PrivateKey.PublicKey)
-// 	encodedPBK := hexutil.Encode(binaryPBK)
-
-// 	address := crypto.PubkeyToAddress(ks.PrivateKey.PublicKey).Hex()
-
-// 	return encodedPVK, encodedPBK, address, nil
-// }
