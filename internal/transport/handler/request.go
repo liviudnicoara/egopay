@@ -44,3 +44,20 @@ func (r *UserLoginRequest) bind(c *fiber.Ctx, v *Validator) error {
 
 	return nil
 }
+
+type CreateAccountRequest struct {
+	Password string `json:"password" validate:"required"`
+}
+
+func (r *CreateAccountRequest) bind(c *fiber.Ctx, v *Validator) error {
+
+	if err := c.BodyParser(r); err != nil {
+		return err
+	}
+
+	if err := v.Validate(r); err != nil {
+		return err
+	}
+
+	return nil
+}

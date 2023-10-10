@@ -2,6 +2,7 @@ package users
 
 import (
 	"encoding/base64"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
@@ -37,4 +38,14 @@ func (u *User) DecodePassword(password string) []byte {
 func (u *User) CheckPassword(plain string) bool {
 	err := bcrypt.CompareHashAndPassword(u.DecodePassword(u.Password), []byte(plain))
 	return err == nil
+}
+
+func (u *User) HasAccount(address string) bool {
+	for _, a := range u.AccountAddresses {
+		if strings.EqualFold(address, a) {
+			return true
+		}
+	}
+
+	return false
 }

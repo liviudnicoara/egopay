@@ -33,13 +33,30 @@ func NewHandler(us users.UserService) *Handler {
 func (h *Handler) Register(r *fiber.App) {
 	v1 := r.Group("/api")
 
-	h.registerUser(&v1)
+	h.registerUsers(&v1)
 }
 
-func (h *Handler) registerUser(v *fiber.Router) {
+func (h *Handler) registerUsers(v *fiber.Router) {
 	users := (*v).Group("/users")
 	users.Get("/all", h.All)
 	users.Post("/signup", h.SignUp)
 	users.Post("/login", h.Login)
 	users.Get("", h.jwtMiddleware, h.CurrentUser)
+}
+
+func (h *Handler) registerAccounts(v *fiber.Router) {
+	users := (*v).Group("/accounts", h.jwtMiddleware)
+	users.Get("/:address/balance", h.GetAccountBalance)
+	users.Post("/create", h.CreateAccount)
+}
+
+func (h *Handler) registerBills(v *fiber.Router) {
+	users := (*v).Group("/bills", h.jwtMiddleware)
+	// users.Get("", h.GetBills)
+	users.Post("/create", h.CreateBill)
+}
+
+func (h *Handler) registerTransfers(v *fiber.Router) {
+	users := (*v).Group("/transfers", h.jwtMiddleware)
+	users.Post("/make", h.MakeTransfer)
 }

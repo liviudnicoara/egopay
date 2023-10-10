@@ -29,7 +29,7 @@ func (h *Handler) SignUp(c *fiber.Ctx) error {
 	if err := req.bind(c, &u, h.validator); err != nil {
 		return c.Status(http.StatusUnprocessableEntity).JSON(errors.NewError(err))
 	}
-	if err := h.userService.Register(u.Username, u.Email, u.Password); err != nil {
+	if err := h.userService.Register(c.Context(), u.Username, u.Email, u.Password); err != nil {
 		return c.Status(http.StatusUnprocessableEntity).JSON(errors.NewError(err))
 	}
 
@@ -57,7 +57,7 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnprocessableEntity).JSON(errors.NewError(err))
 	}
 
-	u, err := h.userService.GetByEmail(req.Email)
+	u, err := h.userService.GetByEmail(c.Context(), req.Email)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(errors.NewError(err))
 	}
@@ -89,7 +89,7 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 // @Security ApiKeyAuth
 // @Router /api/users [get]
 func (h *Handler) CurrentUser(c *fiber.Ctx) error {
-	u, err := h.userService.GetByID(userIDFromToken(c))
+	u, err := h.userService.GetByID(c.Context(), userIDFromToken(c))
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(errors.NewError(err))
 	}
@@ -114,7 +114,7 @@ func (h *Handler) CurrentUser(c *fiber.Ctx) error {
 // @Failure 500 {object} errors.Error
 // @Router /api/users/all [get]
 func (h *Handler) All(c *fiber.Ctx) error {
-	users, err := h.userService.All()
+	users, err := h.userService.All(c.Context())
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(errors.NewError(err))
 	}

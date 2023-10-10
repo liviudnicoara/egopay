@@ -1,6 +1,7 @@
 package users
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -14,9 +15,9 @@ import (
 )
 
 type UserRepository interface {
-	Save(User) error
-	Get(ID uuid.UUID) (User, error)
-	GetAll() ([]User, error)
+	Save(context.Context, User) error
+	Get(ctx context.Context, ID uuid.UUID) (User, error)
+	GetAll(ctx context.Context) ([]User, error)
 }
 
 type userRepository struct {
@@ -39,7 +40,7 @@ func NewUserRepository(storagePath string) UserRepository {
 	}
 }
 
-func (r *userRepository) Save(user User) error {
+func (r *userRepository) Save(ctx context.Context, user User) error {
 	r.m.Lock()
 	defer r.m.Unlock()
 	usersFile, err := os.ReadFile(r.storageFilePath)
@@ -67,7 +68,7 @@ func (r *userRepository) Save(user User) error {
 	return nil
 }
 
-func (r *userRepository) Get(ID uuid.UUID) (User, error) {
+func (r *userRepository) Get(ctx context.Context, ID uuid.UUID) (User, error) {
 	r.m.RLock()
 	defer r.m.RLocker().Unlock()
 
@@ -90,7 +91,7 @@ func (r *userRepository) Get(ID uuid.UUID) (User, error) {
 	return user, nil
 }
 
-func (r *userRepository) GetAll() ([]User, error) {
+func (r *userRepository) GetAll(ctx context.Context) ([]User, error) {
 	r.m.RLock()
 	defer r.m.RLocker().Unlock()
 

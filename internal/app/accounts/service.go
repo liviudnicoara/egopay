@@ -41,7 +41,7 @@ func (s *accountService) GetBalance(ctx context.Context, address string) (big.Fl
 	balance, err := s.client.BalanceAt(ctx, addr, nil)
 
 	if err != nil {
-		return big.Float{}, errors.WithMessagef(err, "could not retirve balance for address %s", address)
+		return big.Float{}, errors.WithMessagef(err, "could not retrieve balance for address %s", address)
 	}
 
 	return convert.ConvertWEItoETH(balance), nil

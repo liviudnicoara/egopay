@@ -39,7 +39,7 @@ func main() {
 
 	storagePath := "./.storage/users"
 	us := users.NewUserService(users.NewUserRepository(storagePath), as)
-	fmt.Println(us.All())
+	fmt.Println(us.All(context.Background()))
 
 	h := handler.NewHandler(us)
 	h.Register(r)

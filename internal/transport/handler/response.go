@@ -21,3 +21,25 @@ func newUserResponse(u *users.User) *UserResponse {
 	r.Token = jwt.GenerateJWT(u.ID)
 	return r
 }
+
+type AccountBalanceResponse struct {
+	Address string `json:"address"`
+	Balance string `json:"balance"`
+}
+
+func newAccountBalanceResponse(address string, balance string) *AccountBalanceResponse {
+	r := new(AccountBalanceResponse)
+	r.Address = address
+	r.Balance = balance
+	return r
+}
+
+type CreateAccountResponse struct {
+	Address string `json:"address"`
+}
+
+func newCreateAccountResponse(address string) *CreateAccountResponse {
+	r := new(CreateAccountResponse)
+	r.Address = address
+	return r
+}
