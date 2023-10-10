@@ -43,3 +43,17 @@ func newCreateAccountResponse(address string) *CreateAccountResponse {
 	r.Address = address
 	return r
 }
+
+type CreateBillResponse struct {
+	BillAddress     string `json:"billAddress"`
+	TransactionHash string `json:"transactionHash"`
+	Success         bool   `json:"success"`
+}
+
+func newCreateBillResponse(billAddress, tx string, isSuccess bool) *CreateBillResponse {
+	r := new(CreateBillResponse)
+	r.BillAddress = billAddress
+	r.TransactionHash = tx
+	r.Success = isSuccess
+	return r
+}

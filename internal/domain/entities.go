@@ -29,8 +29,16 @@ func (f Fiat) ToFloat64() float64 {
 	return x
 }
 
+func (f Fiat) ToInt64() int64 {
+	return int64(f)
+}
+
 type USD struct {
 	Fiat
+}
+
+func NewUSDFromFloat(f float64) USD {
+	return USD{NewFiatFromFloat(f)}
 }
 
 func NewUSDFromBigFloat(f big.Float) USD {

@@ -3,18 +3,20 @@ package handler
 import (
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/liviudnicoara/egopay/internal/app/bills"
 	"github.com/liviudnicoara/egopay/internal/app/users"
 	"github.com/liviudnicoara/egopay/pkg/jwt"
 )
 
 type Handler struct {
 	userService users.UserService
+	billService bills.BillService
 	validator   *Validator
 
 	jwtMiddleware func(*fiber.Ctx) error
 }
 
-func NewHandler(us users.UserService) *Handler {
+func NewHandler(us users.UserService, bs bills.BillService) *Handler {
 	v := NewValidator()
 
 	jwtMW := jwtware.New(
@@ -25,6 +27,7 @@ func NewHandler(us users.UserService) *Handler {
 
 	return &Handler{
 		userService:   us,
+		billService:   bs,
 		validator:     v,
 		jwtMiddleware: jwtMW,
 	}

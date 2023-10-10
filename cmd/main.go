@@ -41,7 +41,9 @@ func main() {
 	us := users.NewUserService(users.NewUserRepository(storagePath), as)
 	fmt.Println(us.All(context.Background()))
 
-	h := handler.NewHandler(us)
+	bs := bills.NewBillService(as, client)
+
+	h := handler.NewHandler(us, bs)
 	h.Register(r)
 	err = r.Listen(":3001")
 	if err != nil {
@@ -90,10 +92,10 @@ func main() {
 	// Deploy contract
 	// account, err := as.GetAccount("0xCf9a951E338A3663804b5499706dc50A79AE908A", "Ceparola123!")
 
-	bs := bills.NewBillService(as, client)
-	address, tx, err := bs.Split(context.Background(), "0xCf9a951E338A3663804b5499706dc50A79AE908A", 100, "pass")
+	// bs := bills.NewBillService(as, client)
+	// address, tx, err := bs.Split(context.Background(), "0xCf9a951E338A3663804b5499706dc50A79AE908A", 100, "pass")
 
-	fmt.Println(address)
-	fmt.Println(tx)
+	// fmt.Println(address)
+	// fmt.Println(tx)
 
 }
