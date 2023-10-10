@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/liviudnicoara/egopay/internal/app/accounts"
+	"github.com/liviudnicoara/egopay/internal/domain"
 	"github.com/liviudnicoara/egopay/pkg/convert"
 	"github.com/pkg/errors"
 )
@@ -15,7 +16,7 @@ import (
 const GAS_LIMIT = 21000
 
 type TransferService interface {
-	Transfer(ctx context.Context, from string, to string, amount *big.Float, password string) error
+	Transfer(ctx context.Context, from string, to string, amount domain.USD, password string) error
 }
 
 type transferService struct {
@@ -38,7 +39,7 @@ func NewTransferService(accountService accounts.AccountService, client *ethclien
 	}
 }
 
-func (s *transferService) Transfer(ctx context.Context, from string, to string, amount *big.Float, password string) error {
+func (s *transferService) Transfer(ctx context.Context, from string, to string, amount domain.USD, password string) error {
 	fromAddr := common.HexToAddress(from)
 	toAddr := common.HexToAddress(to)
 
@@ -57,7 +58,7 @@ func (s *transferService) Transfer(ctx context.Context, from string, to string, 
 		return errors.WithMessage(err, "could not get gas price")
 	}
 
-	tx := types.NewTransaction(nonce, toAddr, convert.ConvertETHtoWEI(amount), GAS_LIMIT, gasPrice, nil)
+	tx := types.NewTransaction(nonce, toAddr, convert.ConvertETHtoWEI(amount.ToBigFloat()), GAS_LIMIT, gasPrice, nil)
 
 	tx, err = types.SignTx(tx, types.NewEIP155Signer(s.chainID), account.PrivateKey)
 	if err != nil {
