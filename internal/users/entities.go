@@ -1,6 +1,9 @@
 package users
 
 import (
+	"encoding/base64"
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
@@ -23,7 +26,17 @@ func (u *User) HashPassword(plain string) (string, error) {
 	return string(h), err
 }
 
+func (u *User) EncodePassword(password string) string {
+	return base64.StdEncoding.EncodeToString([]byte(password))
+}
+
+func (u *User) DecodePassword(password string) []byte {
+	dec, _ := base64.StdEncoding.DecodeString(password)
+	return dec
+}
+
 func (u *User) CheckPassword(plain string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(plain))
+	fmt.Println(string(u.DecodePassword(u.Password)))
+	err := bcrypt.CompareHashAndPassword(u.DecodePassword(u.Password), []byte(plain))
 	return err == nil
 }

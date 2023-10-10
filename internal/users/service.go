@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/liviudnicoara/egopay/internal/accounts"
 	"github.com/pkg/errors"
-	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -33,17 +32,18 @@ func NewUserService(userRepository UserRepository, accountService accounts.Accou
 }
 
 func (s *userService) Register(userName string, email string, password string) error {
-	hashedPassword, err := hashPassword(password)
-	if err != nil {
-		return errors.WithMessagef(err, "could not hash password: %s", password)
-	}
-
 	user := User{
 		ID:       uuid.New(),
 		Username: strings.ToLower(userName),
 		Email:    email,
-		Password: hashedPassword,
 	}
+
+	hashedPassword, err := user.HashPassword(password)
+	if err != nil {
+		return errors.WithMessagef(err, "could not hash password: %s", password)
+	}
+
+	user.Password = user.EncodePassword(hashedPassword)
 
 	err = s.userRepository.Save(user)
 
@@ -125,14 +125,4 @@ func (s *userService) AddAccount(userID uuid.UUID, password string) (string, err
 	}
 
 	return accountAddress, nil
-}
-
-func hashPassword(password string) (string, error) {
-	salt, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	if err != nil {
-		return "", err
-	}
-
-	hashedPassword := string(salt)
-	return hashedPassword, nil
 }
