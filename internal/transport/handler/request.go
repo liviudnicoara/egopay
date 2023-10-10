@@ -81,3 +81,23 @@ func (r *CreateBillRequest) bind(c *fiber.Ctx, v *Validator) error {
 
 	return nil
 }
+
+type CreateTransferRequest struct {
+	FromAddress string  `json:"fromAddress" validate:"required"`
+	ToAddress   string  `json:"toAddress" validate:"required"`
+	Amount      float64 `json:"amount" validate:"required"`
+	Password    string  `json:"password" validate:"required"`
+}
+
+func (r *CreateTransferRequest) bind(c *fiber.Ctx, v *Validator) error {
+
+	if err := c.BodyParser(r); err != nil {
+		return err
+	}
+
+	if err := v.Validate(r); err != nil {
+		return err
+	}
+
+	return nil
+}

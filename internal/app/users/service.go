@@ -13,13 +13,12 @@ import (
 )
 
 type UserService interface {
-	All(ctx context.Context) ([]User, error)
 	Register(ctx context.Context, userName string, email string, password string) error
 	Login(ctx context.Context, userName string, password string) (*User, error)
 	GetByID(ctx context.Context, userID uuid.UUID) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	AddAccount(ctx context.Context, userID uuid.UUID, password string) (string, error)
-	GetBalance(ctx context.Context, userID uuid.UUID, address string) (string, error)
+	GetBalance(ctx context.Context, userID uuid.UUID, address string) (balanceFiat string, balanceToken string, err error)
 }
 
 type userService struct {
@@ -59,12 +58,6 @@ func (s *userService) Register(ctx context.Context, userName string, email strin
 
 func (s *userService) Login(ctx context.Context, userName string, password string) (*User, error) {
 	return nil, nil
-}
-
-func (s *userService) All(ctx context.Context) ([]User, error) {
-	u, err := s.userRepository.GetAll(ctx)
-
-	return u, err
 }
 
 func (s *userService) GetByID(ctx context.Context, userID uuid.UUID) (*User, error) {
@@ -130,21 +123,21 @@ func (s *userService) AddAccount(ctx context.Context, userID uuid.UUID, password
 	return accountAddress, nil
 }
 
-func (s *userService) GetBalance(ctx context.Context, userID uuid.UUID, address string) (string, error) {
+func (s *userService) GetBalance(ctx context.Context, userID uuid.UUID, address string) (balanceFiat string, balanceToken string, err error) {
 	user, err := s.userRepository.Get(ctx, userID)
 
 	if err != nil {
-		return "", errors.WithMessagef(err, "could not get user: %s", userID)
+		return "", "", errors.WithMessagef(err, "could not get user: %s", userID)
 	}
 
 	if !user.HasAccount(address) {
-		return "", errors.New(fmt.Sprintf("account %s not found for userID %s", address, userID.String()))
+		return "", "", errors.New(fmt.Sprintf("account %s not found for userID %s", address, userID.String()))
 	}
 
 	balance, err := s.accountService.GetBalance(ctx, address)
 
 	if err != nil {
-		return "", errors.WithMessagef(err, "could not get balance for account %s for user: %s", address, userID.String())
+		return "", "", errors.WithMessagef(err, "could not get balance for account %s for user: %s", address, userID.String())
 	}
 
 	value := domain.NewUSDFromBigFloat(balance)

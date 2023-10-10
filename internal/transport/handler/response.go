@@ -23,14 +23,16 @@ func newUserResponse(u *users.User) *UserResponse {
 }
 
 type AccountBalanceResponse struct {
-	Address string `json:"address"`
-	Balance string `json:"balance"`
+	Address      string `json:"address"`
+	BalanceFiat  string `json:"balanceFiat"`
+	BalanceToken string `json:"balanceToken"`
 }
 
-func newAccountBalanceResponse(address string, balance string) *AccountBalanceResponse {
+func newAccountBalanceResponse(address string, balanceFiat string, balanceToken string) *AccountBalanceResponse {
 	r := new(AccountBalanceResponse)
 	r.Address = address
-	r.Balance = balance
+	r.BalanceFiat = balanceFiat
+	r.BalanceToken = balanceToken
 	return r
 }
 
@@ -54,6 +56,16 @@ func newCreateBillResponse(billAddress, tx string, isSuccess bool) *CreateBillRe
 	r := new(CreateBillResponse)
 	r.BillAddress = billAddress
 	r.TransactionHash = tx
+	r.Success = isSuccess
+	return r
+}
+
+type CreateTransferResponse struct {
+	Success bool `json:"success"`
+}
+
+func newCreateTransferResponse(isSuccess bool) *CreateBillResponse {
+	r := new(CreateBillResponse)
 	r.Success = isSuccess
 	return r
 }

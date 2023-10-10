@@ -33,6 +33,10 @@ func (f Fiat) ToInt64() int64 {
 	return int64(f)
 }
 
+func (f Fiat) ToBigFloat() *big.Float {
+	return big.NewFloat(f.ToFloat64())
+}
+
 type USD struct {
 	Fiat
 }
