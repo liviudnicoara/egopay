@@ -1,6 +1,7 @@
 package users
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/google/uuid"
@@ -11,8 +12,11 @@ import (
 )
 
 type UserService interface {
-	Register(userName string, password string) (User, error)
-	Login(userName string, password string) (User, error)
+	All() ([]User, error)
+	Register(userName string, email string, password string) error
+	Login(userName string, password string) (*User, error)
+	GetByID(userID uuid.UUID) (*User, error)
+	GetByEmail(email string) (*User, error)
 	AddAccount(userID uuid.UUID, password string) (string, error)
 }
 
@@ -28,29 +32,59 @@ func NewUserService(userRepository UserRepository, accountService accounts.Accou
 	}
 }
 
-func (s *userService) Register(userName string, password string) (User, error) {
+func (s *userService) Register(userName string, email string, password string) error {
 	hashedPassword, err := hashPassword(password)
 	if err != nil {
-		return User{}, errors.WithMessagef(err, "could not hash password: %s", password)
+		return errors.WithMessagef(err, "could not hash password: %s", password)
 	}
 
 	user := User{
 		ID:       uuid.New(),
-		UserName: strings.ToLower(userName),
+		Username: strings.ToLower(userName),
+		Email:    email,
 		Password: hashedPassword,
 	}
 
 	err = s.userRepository.Save(user)
 
 	if err != nil {
-		return User{}, errors.WithMessagef(err, "could not save user: %s", userName)
+		return errors.WithMessagef(err, "could not save user: %s", userName)
 	}
 
-	return user, nil
+	return nil
 }
 
-func (s *userService) Login(userName string, password string) (User, error) {
-	return User{}, nil
+func (s *userService) Login(userName string, password string) (*User, error) {
+	return nil, nil
+}
+
+func (s *userService) All() ([]User, error) {
+	u, err := s.userRepository.GetAll()
+
+	return u, err
+}
+
+func (s *userService) GetByID(userID uuid.UUID) (*User, error) {
+	u, err := s.userRepository.Get(userID)
+	if err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
+
+func (s *userService) GetByEmail(email string) (*User, error) {
+	users, err := s.userRepository.GetAll()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, u := range users {
+		if strings.EqualFold(u.Email, email) {
+			return &u, nil
+		}
+	}
+
+	return nil, errors.New(fmt.Sprintf("user with email %s was not found", email))
 }
 
 func (s *userService) AddAccount(userID uuid.UUID, password string) (string, error) {
