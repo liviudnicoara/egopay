@@ -5,4 +5,7 @@ build:
 gen:
 	abigen --bin=contracts/build/SplitBill.bin --abi=contracts/build/SplitBill.abi --pkg=contracts --type=SplitBill --out=contracts/splitbill.go
 
-.PHONY: build gen
+swagger:
+	swag init -g ./cmd/main.go -o ./cmd/docs
+
+.PHONY: build gen swagger
