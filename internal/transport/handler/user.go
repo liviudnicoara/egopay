@@ -22,7 +22,7 @@ import (
 // @Failure 400 {object} errors.Error
 // @Failure 404 {objects} errors.Error
 // @Failure 500 {objects} errors.Error
-// @Router /api/users/signup [post]
+// @Router /api/user/signup [post]
 func (h *Handler) SignUp(c *fiber.Ctx) error {
 	var u users.User
 	req := &UserRegisterRequest{}
@@ -50,7 +50,7 @@ func (h *Handler) SignUp(c *fiber.Ctx) error {
 // @Failure 422 {object} errors.Error
 // @Failure 404 {object} errors.Error
 // @Failure 500 {object} errors.Error
-// @Router /api/users/login [post]
+// @Router /api/user/login [post]
 func (h *Handler) Login(c *fiber.Ctx) error {
 	req := &UserLoginRequest{}
 	if err := req.bind(c, h.validator); err != nil {
@@ -87,7 +87,7 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 // @Failure 404 {object} errors.Error
 // @Failure 500 {object} errors.Error
 // @Security ApiKeyAuth
-// @Router /api/users [get]
+// @Router /api/user [get]
 func (h *Handler) CurrentUser(c *fiber.Ctx) error {
 	u, err := h.userService.GetByID(c.Context(), userIDFromToken(c))
 	if err != nil {
@@ -97,36 +97,6 @@ func (h *Handler) CurrentUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusNotFound).JSON(errors.NotFound())
 	}
 	return c.Status(http.StatusOK).JSON(newUserResponse(u))
-}
-
-// All Users godoc
-// @Summary Get all users
-// @Description Gets the all the  users
-// @ID all
-// @Tags user
-// @Accept json
-// @Produce json
-// @Success 200 {object} []UserResponse
-// @Failure 400 {object} errors.Error
-// @Failure 401 {object} errors.Error
-// @Failure 422 {object} errors.Error
-// @Failure 404 {object} errors.Error
-// @Failure 500 {object} errors.Error
-// @Router /api/users/all [get]
-func (h *Handler) All(c *fiber.Ctx) error {
-	users, err := h.userService.All(c.Context())
-	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(errors.NewError(err))
-	}
-	if users == nil {
-		return c.Status(http.StatusNotFound).JSON(errors.NotFound())
-	}
-	ur := make([]*UserResponse, len(users))
-
-	for i, u := range users {
-		ur[i] = newUserResponse(&u)
-	}
-	return c.Status(http.StatusOK).JSON(ur)
 }
 
 func userIDFromToken(c *fiber.Ctx) uuid.UUID {

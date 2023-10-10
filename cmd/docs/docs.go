@@ -15,6 +15,230 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/accounts/create": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a new account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "Creates a new account",
+                "operationId": "create-account",
+                "parameters": [
+                    {
+                        "description": "Info for creating account",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateAccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "objects"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "objects"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/accounts/{address}/balance": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get the account balance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "Get the account balance",
+                "operationId": "get-account-balance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "address of the account balance to get",
+                        "name": "account",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.AccountBalanceResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/bills/create": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a new bill",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bills"
+                ],
+                "summary": "Creates a new bill",
+                "operationId": "create-bill",
+                "parameters": [
+                    {
+                        "description": "Info for creating bill",
+                        "name": "bill",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateBillRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateBillResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "objects"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "objects"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfers/create": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a new transfer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "transfers"
+                ],
+                "summary": "Creates a new transfer",
+                "operationId": "create-transfer",
+                "parameters": [
+                    {
+                        "description": "Info for creating transfer",
+                        "name": "bill",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateTransferRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateTransferResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errors.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "objects"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "objects"
+                        }
+                    }
+                }
+            }
+        },
         "/api/users": {
             "get": {
                 "security": [
@@ -30,7 +254,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "users"
                 ],
                 "summary": "Get the current user",
                 "operationId": "current-user",
@@ -84,7 +308,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "users"
                 ],
                 "summary": "Get all users",
                 "operationId": "all",
@@ -141,7 +365,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "users"
                 ],
                 "summary": "Login for existing user",
                 "operationId": "login",
@@ -206,7 +430,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "users"
                 ],
                 "summary": "Register a new user",
                 "operationId": "sign-up",
@@ -257,6 +481,107 @@ const docTemplate = `{
                 "errors": {
                     "type": "object",
                     "additionalProperties": true
+                }
+            }
+        },
+        "handler.AccountBalanceResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "balance": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateAccountRequest": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateAccountResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateBillRequest": {
+            "type": "object",
+            "required": [
+                "address",
+                "amount",
+                "password",
+                "payers"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "payers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "handler.CreateBillResponse": {
+            "type": "object",
+            "properties": {
+                "billAddress": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "transactionHash": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateTransferRequest": {
+            "type": "object",
+            "required": [
+                "amount",
+                "fromAddress",
+                "password",
+                "toAddress"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "fromAddress": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "toAddress": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateTransferResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
                 }
             }
         },

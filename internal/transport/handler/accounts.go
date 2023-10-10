@@ -11,22 +11,23 @@ import (
 // @Summary Get the account balance
 // @Description Get the account balance
 // @ID get-account-balance
-// @Tags acccounts
+// @Tags accounts
 // @Accept  json
 // @Produce  json
 // @Param account path string true "address of the account balance to get"
 // @Success 200 {object} AccountBalanceResponse
-// @Failure 400 {object} utils.Error
-// @Failure 500 {object} utils.Error
+// @Failure 400 {object} errors.Error
+// @Failure 500 {object} errors.Error
+// @Security ApiKeyAuth
 // @Router /api/accounts/{address}/balance [get]
 func (h *Handler) GetAccountBalance(c *fiber.Ctx) error {
 	address := c.Params("address")
-	balance, err := h.userService.GetBalance(c.Context(), userIDFromToken(c), address)
+	balanceFiat, balanceToken, err := h.userService.GetBalance(c.Context(), userIDFromToken(c), address)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(errors.NewError(err))
 	}
 
-	return c.Status(http.StatusOK).JSON(newAccountBalanceResponse(address, balance))
+	return c.Status(http.StatusOK).JSON(newAccountBalanceResponse(address, balanceFiat, balanceToken))
 }
 
 // CreateAccount godoc
@@ -41,6 +42,7 @@ func (h *Handler) GetAccountBalance(c *fiber.Ctx) error {
 // @Failure 400 {object} errors.Error
 // @Failure 404 {objects} errors.Error
 // @Failure 500 {objects} errors.Error
+// @Security ApiKeyAuth
 // @Router /api/accounts/create [post]
 func (h *Handler) CreateAccount(c *fiber.Ctx) error {
 	req := &CreateAccountRequest{}

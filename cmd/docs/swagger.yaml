@@ -5,6 +5,73 @@ definitions:
         additionalProperties: true
         type: object
     type: object
+  handler.AccountBalanceResponse:
+    properties:
+      address:
+        type: string
+      balance:
+        type: string
+    type: object
+  handler.CreateAccountRequest:
+    properties:
+      password:
+        type: string
+    required:
+    - password
+    type: object
+  handler.CreateAccountResponse:
+    properties:
+      address:
+        type: string
+    type: object
+  handler.CreateBillRequest:
+    properties:
+      address:
+        type: string
+      amount:
+        type: number
+      password:
+        type: string
+      payers:
+        items:
+          type: string
+        type: array
+    required:
+    - address
+    - amount
+    - password
+    - payers
+    type: object
+  handler.CreateBillResponse:
+    properties:
+      billAddress:
+        type: string
+      success:
+        type: boolean
+      transactionHash:
+        type: string
+    type: object
+  handler.CreateTransferRequest:
+    properties:
+      amount:
+        type: number
+      fromAddress:
+        type: string
+      password:
+        type: string
+      toAddress:
+        type: string
+    required:
+    - amount
+    - fromAddress
+    - password
+    - toAddress
+    type: object
+  handler.CreateTransferResponse:
+    properties:
+      success:
+        type: boolean
+    type: object
   handler.UserLoginRequest:
     properties:
       email:
@@ -41,6 +108,149 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/accounts/{address}/balance:
+    get:
+      consumes:
+      - application/json
+      description: Get the account balance
+      operationId: get-account-balance
+      parameters:
+      - description: address of the account balance to get
+        in: path
+        name: account
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.AccountBalanceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get the account balance
+      tags:
+      - accounts
+  /api/accounts/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new account
+      operationId: create-account
+      parameters:
+      - description: Info for creating account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handler.CreateAccountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.Error'
+        "404":
+          description: Not Found
+          schema:
+            type: objects
+        "500":
+          description: Internal Server Error
+          schema:
+            type: objects
+      security:
+      - ApiKeyAuth: []
+      summary: Creates a new account
+      tags:
+      - accounts
+  /api/bills/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new bill
+      operationId: create-bill
+      parameters:
+      - description: Info for creating bill
+        in: body
+        name: bill
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateBillRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handler.CreateBillResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.Error'
+        "404":
+          description: Not Found
+          schema:
+            type: objects
+        "500":
+          description: Internal Server Error
+          schema:
+            type: objects
+      security:
+      - ApiKeyAuth: []
+      summary: Creates a new bill
+      tags:
+      - bills
+  /api/transfers/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new transfer
+      operationId: create-transfer
+      parameters:
+      - description: Info for creating transfer
+        in: body
+        name: bill
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateTransferRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handler.CreateTransferResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.Error'
+        "404":
+          description: Not Found
+          schema:
+            type: objects
+        "500":
+          description: Internal Server Error
+          schema:
+            type: objects
+      security:
+      - ApiKeyAuth: []
+      summary: Creates a new transfer
+      tags:
+      - transfers
   /api/users:
     get:
       consumes:
@@ -78,7 +288,7 @@ paths:
       - ApiKeyAuth: []
       summary: Get the current user
       tags:
-      - user
+      - users
   /api/users/all:
     get:
       consumes:
@@ -116,7 +326,7 @@ paths:
             $ref: '#/definitions/errors.Error'
       summary: Get all users
       tags:
-      - user
+      - users
   /api/users/login:
     post:
       consumes:
@@ -159,7 +369,7 @@ paths:
             $ref: '#/definitions/errors.Error'
       summary: Login for existing user
       tags:
-      - user
+      - users
   /api/users/signup:
     post:
       consumes:
@@ -194,7 +404,7 @@ paths:
             type: objects
       summary: Register a new user
       tags:
-      - user
+      - users
 securityDefinitions:
   ApiKeyAuth:
     in: header

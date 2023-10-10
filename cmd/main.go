@@ -13,6 +13,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/liviudnicoara/egopay/internal/app/accounts"
 	"github.com/liviudnicoara/egopay/internal/app/bills"
+	"github.com/liviudnicoara/egopay/internal/app/transfers"
 	"github.com/liviudnicoara/egopay/internal/app/users"
 	"github.com/liviudnicoara/egopay/internal/transport/handler"
 	"github.com/liviudnicoara/egopay/internal/transport/router"
@@ -39,11 +40,11 @@ func main() {
 
 	storagePath := "./.storage/users"
 	us := users.NewUserService(users.NewUserRepository(storagePath), as)
-	fmt.Println(us.All(context.Background()))
 
 	bs := bills.NewBillService(as, client)
+	ts := transfers.NewTransferService(as, client)
 
-	h := handler.NewHandler(us, bs)
+	h := handler.NewHandler(us, bs, ts)
 	h.Register(r)
 	err = r.Listen(":3001")
 	if err != nil {

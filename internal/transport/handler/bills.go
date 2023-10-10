@@ -16,8 +16,9 @@ import (
 // // @Accept  json
 // // @Produce  json
 // // @Success 200 {object} BillsResponse
-// // @Failure 400 {object} utils.Error
-// // @Failure 500 {object} utils.Error
+// // @Failure 400 {object} errors.Error
+// // @Failure 500 {object} errors.Error
+// // @Security ApiKeyAuth
 // // @Router /api/accounts/{address}/balance [get]
 // func (h *Handler) GetBills(c *fiber.Ctx) error {
 // 	address := c.Params("address")
@@ -41,6 +42,7 @@ import (
 // @Failure 400 {object} errors.Error
 // @Failure 404 {objects} errors.Error
 // @Failure 500 {objects} errors.Error
+// @Security ApiKeyAuth
 // @Router /api/bills/create [post]
 func (h *Handler) CreateBill(c *fiber.Ctx) error {
 	req := &CreateBillRequest{}
