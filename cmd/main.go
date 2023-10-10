@@ -1,3 +1,8 @@
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+//
+//go:generate swag init
 package main
 
 import (
@@ -8,6 +13,12 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/liviudnicoara/egopay/internal/accounts"
 	"github.com/liviudnicoara/egopay/internal/bills"
+	"github.com/liviudnicoara/egopay/internal/transport/handler"
+	"github.com/liviudnicoara/egopay/internal/transport/router"
+	"github.com/liviudnicoara/egopay/internal/users"
+
+	"github.com/gofiber/swagger"
+	_ "github.com/liviudnicoara/egopay/cmd/docs"
 )
 
 const ALCHEMY_TEST_URL = "https://eth-sepolia.g.alchemy.com/v2/w0uQJ2Oimfqh8H-ibuWNhP7dhv7cjeqs"
@@ -19,6 +30,23 @@ func main() {
 		log.Fatal(err)
 	}
 	defer client.Close()
+
+	r := router.New()
+	r.Get("/swagger/*", swagger.HandlerDefault)
+
+	ksPath := "./.storage/accounts"
+	as := accounts.NewAccountService(accounts.NewAccountRepository(ksPath), client)
+
+	storagePath := "./.storage/users"
+	us := users.NewUserService(users.NewUserRepository(storagePath), as)
+	fmt.Println(us.All())
+
+	h := handler.NewHandler(us)
+	h.Register(r)
+	err = r.Listen(":3001")
+	if err != nil {
+		fmt.Printf("%v", err)
+	}
 
 	// // Get the balance of an account
 	// account := common.HexToAddress(ACCOUNT)
@@ -43,12 +71,6 @@ func main() {
 	// fmt.Println(pbk)
 	// fmt.Println(account)
 	// fmt.Println(err)
-
-	ksPath := "./.storage/accounts"
-	as := accounts.NewAccountService(accounts.NewAccountRepository(ksPath), client)
-
-	// storagePath := "./.storage/users"
-	// us := users.NewUserService(users.NewUserRepository(storagePath), as)
 
 	// user, err := us.Register("test", "pass")
 	// ad, err := us.AddAccount(uuid.MustParse("77e34f97-cea3-4278-9570-20dc309d3a51"), "pass")
