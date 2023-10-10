@@ -2,7 +2,7 @@ package handler
 
 import (
 	_ "github.com/gofiber/fiber/v2"
-	"github.com/liviudnicoara/egopay/internal/users"
+	"github.com/liviudnicoara/egopay/internal/app/users"
 	"github.com/liviudnicoara/egopay/pkg/jwt"
 )
 

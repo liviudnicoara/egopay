@@ -2,7 +2,6 @@ package users
 
 import (
 	"encoding/base64"
-	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
@@ -36,7 +35,6 @@ func (u *User) DecodePassword(password string) []byte {
 }
 
 func (u *User) CheckPassword(plain string) bool {
-	fmt.Println(string(u.DecodePassword(u.Password)))
 	err := bcrypt.CompareHashAndPassword(u.DecodePassword(u.Password), []byte(plain))
 	return err == nil
 }

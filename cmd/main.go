@@ -11,11 +11,11 @@ import (
 	"log"
 
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/liviudnicoara/egopay/internal/accounts"
-	"github.com/liviudnicoara/egopay/internal/bills"
+	"github.com/liviudnicoara/egopay/internal/app/accounts"
+	"github.com/liviudnicoara/egopay/internal/app/bills"
+	"github.com/liviudnicoara/egopay/internal/app/users"
 	"github.com/liviudnicoara/egopay/internal/transport/handler"
 	"github.com/liviudnicoara/egopay/internal/transport/router"
-	"github.com/liviudnicoara/egopay/internal/users"
 
 	"github.com/gofiber/swagger"
 	_ "github.com/liviudnicoara/egopay/cmd/docs"

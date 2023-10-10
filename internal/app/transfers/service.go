@@ -7,7 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/liviudnicoara/egopay/internal/accounts"
+	"github.com/liviudnicoara/egopay/internal/app/accounts"
 	"github.com/liviudnicoara/egopay/pkg/convert"
 	"github.com/pkg/errors"
 )

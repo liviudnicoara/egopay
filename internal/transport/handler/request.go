@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/liviudnicoara/egopay/internal/users"
+	"github.com/liviudnicoara/egopay/internal/app/users"
 )
 
 type UserRegisterRequest struct {

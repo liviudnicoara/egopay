@@ -1,13 +1,12 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/liviudnicoara/egopay/internal/users"
+	"github.com/liviudnicoara/egopay/internal/app/users"
 	"github.com/liviudnicoara/egopay/pkg/errors"
 )
 
@@ -68,7 +67,6 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 	}
 
 	if !u.CheckPassword(req.Password) {
-		fmt.Printf("wrong password %v", err)
 		return c.Status(http.StatusForbidden).JSON(errors.AccessForbidden())
 	}
 
