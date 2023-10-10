@@ -7,7 +7,7 @@ import (
 
 type UserRegisterRequest struct {
 	Username string `json:"username" validate:"required"`
-	Email    string `json:"email" validate:"required, email"`
+	Email    string `json: "email" validate:"required, email"`
 	Password string `json:"password" validate:"required"`
 }
 
@@ -22,13 +22,7 @@ func (r *UserRegisterRequest) bind(c *fiber.Ctx, u *users.User, v *Validator) er
 
 	u.Username = r.Username
 	u.Email = r.Email
-
-	h, err := u.HashPassword(r.Password)
-	if err != nil {
-		return err
-	}
-
-	u.Password = h
+	u.Password = r.Password
 
 	return nil
 }
