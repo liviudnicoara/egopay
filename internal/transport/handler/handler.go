@@ -40,6 +40,9 @@ func (h *Handler) Register(r *fiber.App) {
 	v1 := r.Group("/api")
 
 	h.registerUsers(&v1)
+	h.registerAccounts(&v1)
+	h.registerBills(&v1)
+	h.registerTransfers(&v1)
 }
 
 func (h *Handler) registerUsers(v *fiber.Router) {
@@ -50,18 +53,18 @@ func (h *Handler) registerUsers(v *fiber.Router) {
 }
 
 func (h *Handler) registerAccounts(v *fiber.Router) {
-	users := (*v).Group("/accounts", h.jwtMiddleware)
-	users.Get("/:address/balance", h.GetAccountBalance)
-	users.Post("/create", h.CreateAccount)
+	accounts := (*v).Group("/accounts", h.jwtMiddleware)
+	accounts.Get("/:address/balance", h.GetAccountBalance)
+	accounts.Post("/create", h.CreateAccount)
 }
 
 func (h *Handler) registerBills(v *fiber.Router) {
-	users := (*v).Group("/bills", h.jwtMiddleware)
+	bills := (*v).Group("/bills", h.jwtMiddleware)
 	// users.Get("", h.GetBills)
-	users.Post("/create", h.CreateBill)
+	bills.Post("/create", h.CreateBill)
 }
 
 func (h *Handler) registerTransfers(v *fiber.Router) {
-	users := (*v).Group("/transfers", h.jwtMiddleware)
-	users.Post("/make", h.MakeTransfer)
+	transfers := (*v).Group("/transfers", h.jwtMiddleware)
+	transfers.Post("/make", h.MakeTransfer)
 }

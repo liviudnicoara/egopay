@@ -34,7 +34,7 @@ func main() {
 	}
 	defer client.Close()
 
-	ethPriceService := price.NewPriceService(client, "0x694AA1769357215DE4FAC081bf1f309aDC325306", 10*time.Second)
+	ethPriceService := price.NewPriceService(client, "0x694AA1769357215DE4FAC081bf1f309aDC325306", 1000*time.Second)
 	ethPriceService.Start()
 	defer ethPriceService.Stop()
 
@@ -48,7 +48,7 @@ func main() {
 	us := users.NewUserService(users.NewUserRepository(storagePath), as, ethPriceService)
 
 	bs := bills.NewBillService(as, client)
-	ts := transfers.NewTransferService(as, client)
+	ts := transfers.NewTransferService(as, ethPriceService, client)
 
 	// time.Sleep(10 * time.Second)
 	// f, t, e := us.GetBalance(context.Background(), uuid.MustParse("77e34f97-cea3-4278-9570-20dc309d3a51"), "0xCf9a951E338A3663804b5499706dc50A79AE908A")

@@ -14,7 +14,7 @@ import (
 // @Tags accounts
 // @Accept  json
 // @Produce  json
-// @Param account path string true "address of the account balance to get"
+// @Param address path string true "address of the account balance to get"
 // @Success 200 {object} AccountBalanceResponse
 // @Failure 400 {object} errors.Error
 // @Failure 500 {object} errors.Error
@@ -22,12 +22,12 @@ import (
 // @Router /api/accounts/{address}/balance [get]
 func (h *Handler) GetAccountBalance(c *fiber.Ctx) error {
 	address := c.Params("address")
-	balanceFiat, balanceToken, err := h.userService.GetBalance(c.Context(), userIDFromToken(c), address)
+	balanceFiat, balanceETH, err := h.userService.GetBalance(c.Context(), userIDFromToken(c), address)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(errors.NewError(err))
 	}
 
-	return c.Status(http.StatusOK).JSON(newAccountBalanceResponse(address, balanceFiat, balanceToken))
+	return c.Status(http.StatusOK).JSON(newAccountBalanceResponse(address, balanceFiat, balanceETH))
 }
 
 // CreateAccount godoc

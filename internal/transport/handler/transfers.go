@@ -15,13 +15,13 @@ import (
 // @Tags transfers
 // @Accept json
 // @Produce json
-// @Param bill body CreateTransferRequest true "Info for creating transfer"
+// @Param transfer body CreateTransferRequest true "Info for creating transfer"
 // @Success 201 {object} CreateTransferResponse
 // @Failure 400 {object} errors.Error
 // @Failure 404 {objects} errors.Error
 // @Failure 500 {objects} errors.Error
 // @Security ApiKeyAuth
-// @Router /api/transfers/create [post]
+// @Router /api/transfers/make [post]
 func (h *Handler) MakeTransfer(c *fiber.Ctx) error {
 	req := &CreateTransferRequest{}
 	if err := req.bind(c, h.validator); err != nil {

@@ -22,50 +22,34 @@ func (eth ETH) String() string {
 
 var multiplier = big.NewFloat(100)
 
-type Fiat int64
+type USD int64
 
-func NewFiatFromFloat(f float64) Fiat {
-	return Fiat((f * 100) + 0.5)
+func NewUSDFromFloat(f float64) USD {
+	return USD((f * 100) + 0.5)
 }
 
-func NewFiatFromBigFloat(f big.Float) Fiat {
+func NewUSDFromBigFloat(f big.Float) USD {
 	v, _ := new(big.Float).Mul(&f, multiplier).Float64()
 
-	return Fiat(v + 0.5)
+	return USD(v + 0.5)
 }
 
-func ToFiat(f float64) Fiat {
-	return NewFiatFromFloat(f)
+func ToUSD(f float64) USD {
+	return NewUSDFromFloat(f)
 }
 
-func (f Fiat) ToFloat64() float64 {
-	x := float64(f)
+func (m USD) ToFloat64() float64 {
+	x := float64(m)
 	x = x / 100
 	return x
 }
 
-func (f Fiat) ToInt64() int64 {
-	return int64(f)
+func (m USD) ToInt64() int64 {
+	return int64(m)
 }
 
-func (f Fiat) ToBigFloat() *big.Float {
-	return big.NewFloat(f.ToFloat64())
-}
-
-func (f Fiat) String() string {
-	return fmt.Sprintf("%.2f", f.ToFloat64())
-}
-
-type USD struct {
-	Fiat
-}
-
-func NewUSDFromFloat(f float64) USD {
-	return USD{NewFiatFromFloat(f)}
-}
-
-func NewUSDFromBigFloat(f big.Float) USD {
-	return USD{NewFiatFromBigFloat(f)}
+func (m USD) ToBigFloat() *big.Float {
+	return big.NewFloat(m.ToFloat64())
 }
 
 func (m USD) String() string {

@@ -145,7 +145,7 @@ func (s *userService) GetBalance(ctx context.Context, userID uuid.UUID, address 
 
 	ethBalance := domain.ETH(balance)
 	price := s.priceService.GetPrice()
-	fiatBalance := domain.USD{Fiat: domain.NewFiatFromFloat(ethBalance.ToFloat64() * price.ToFloat64())}
+	fiatBalance := domain.NewUSDFromFloat(ethBalance.ToFloat64() * price.ToFloat64())
 
 	return fiatBalance.String(), ethBalance.String(), nil
 }

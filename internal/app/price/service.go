@@ -18,7 +18,7 @@ import (
 
 type PriceService interface {
 	Start()
-	GetPrice() domain.Fiat
+	GetPrice() domain.USD
 	Stop()
 }
 
@@ -28,7 +28,7 @@ type priceService struct {
 	priceFeedProxy *contracts.AggregatorV3Interface
 	fetchInterval  time.Duration
 	divisor        *big.Int
-	currentPrice   domain.Fiat
+	currentPrice   domain.USD
 	done           chan struct{}
 }
 
@@ -62,35 +62,23 @@ func NewPriceService(client *ethclient.Client, feedContractAddress string, fetch
 
 func (s *priceService) Start() {
 	s.done = make(chan struct{})
+	s.updateCurrentPrice()
 
 	go func(done <-chan struct{}, interval time.Duration) {
 		t := time.NewTicker(interval)
 		for {
 			select {
 			case <-t.C:
-				fmt.Println("started")
-				roundData, err := s.priceFeedProxy.LatestRoundData(&bind.CallOpts{})
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				floatRoundData := divideBigInt(roundData.Answer, s.divisor)
-
-				s.mu.Lock()
-				s.currentPrice = domain.NewFiatFromBigFloat(*floatRoundData)
-				s.mu.Unlock()
-
-				fmt.Println(s.currentPrice)
+				s.updateCurrentPrice()
 
 			case <-done:
-				fmt.Println("ended")
 				return
 			}
 		}
 	}(s.done, s.fetchInterval)
 }
 
-func (s *priceService) GetPrice() domain.Fiat {
+func (s *priceService) GetPrice() domain.USD {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -99,6 +87,19 @@ func (s *priceService) GetPrice() domain.Fiat {
 
 func (s *priceService) Stop() {
 	close(s.done)
+}
+
+func (s *priceService) updateCurrentPrice() {
+	roundData, err := s.priceFeedProxy.LatestRoundData(&bind.CallOpts{})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	floatRoundData := divideBigInt(roundData.Answer, s.divisor)
+
+	s.mu.Lock()
+	s.currentPrice = domain.NewUSDFromBigFloat(*floatRoundData)
+	s.mu.Unlock()
 }
 
 func isContractAddress(addr string, client *ethclient.Client) bool {

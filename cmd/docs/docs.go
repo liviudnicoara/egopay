@@ -96,7 +96,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "address of the account balance to get",
-                        "name": "account",
+                        "name": "address",
                         "in": "path",
                         "required": true
                     }
@@ -181,7 +181,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/transfers/create": {
+        "/api/transfers/make": {
             "post": {
                 "security": [
                     {
@@ -203,7 +203,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Info for creating transfer",
-                        "name": "bill",
+                        "name": "transfer",
                         "in": "body",
                         "required": true,
                         "schema": {

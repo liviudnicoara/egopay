@@ -119,7 +119,7 @@ paths:
       parameters:
       - description: address of the account balance to get
         in: path
-        name: account
+        name: address
         required: true
         type: string
       produces:
@@ -216,7 +216,7 @@ paths:
       summary: Creates a new bill
       tags:
       - bills
-  /api/transfers/create:
+  /api/transfers/make:
     post:
       consumes:
       - application/json
@@ -225,7 +225,7 @@ paths:
       parameters:
       - description: Info for creating transfer
         in: body
-        name: bill
+        name: transfer
         required: true
         schema:
           $ref: '#/definitions/handler.CreateTransferRequest'
