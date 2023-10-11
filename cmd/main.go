@@ -9,10 +9,12 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/liviudnicoara/egopay/internal/app/accounts"
 	"github.com/liviudnicoara/egopay/internal/app/bills"
+	"github.com/liviudnicoara/egopay/internal/app/price"
 	"github.com/liviudnicoara/egopay/internal/app/transfers"
 	"github.com/liviudnicoara/egopay/internal/app/users"
 	"github.com/liviudnicoara/egopay/internal/transport/handler"
@@ -32,6 +34,10 @@ func main() {
 	}
 	defer client.Close()
 
+	ethPriceService := price.NewPriceService(client, "0x694AA1769357215DE4FAC081bf1f309aDC325306", 10*time.Second)
+	ethPriceService.Start()
+	defer ethPriceService.Stop()
+
 	r := router.New()
 	r.Get("/swagger/*", swagger.HandlerDefault)
 
@@ -39,10 +45,16 @@ func main() {
 	as := accounts.NewAccountService(accounts.NewAccountRepository(ksPath), client)
 
 	storagePath := "./.storage/users"
-	us := users.NewUserService(users.NewUserRepository(storagePath), as)
+	us := users.NewUserService(users.NewUserRepository(storagePath), as, ethPriceService)
 
 	bs := bills.NewBillService(as, client)
 	ts := transfers.NewTransferService(as, client)
+
+	// time.Sleep(10 * time.Second)
+	// f, t, e := us.GetBalance(context.Background(), uuid.MustParse("77e34f97-cea3-4278-9570-20dc309d3a51"), "0xCf9a951E338A3663804b5499706dc50A79AE908A")
+	// fmt.Println(f)
+	// fmt.Println(t)
+	// fmt.Println(e)
 
 	h := handler.NewHandler(us, bs, ts)
 	h.Register(r)

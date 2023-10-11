@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/liviudnicoara/egopay/internal/app/accounts"
+	"github.com/liviudnicoara/egopay/internal/app/price"
 	"github.com/liviudnicoara/egopay/internal/domain"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
@@ -18,18 +19,20 @@ type UserService interface {
 	GetByID(ctx context.Context, userID uuid.UUID) (*User, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	AddAccount(ctx context.Context, userID uuid.UUID, password string) (string, error)
-	GetBalance(ctx context.Context, userID uuid.UUID, address string) (balanceFiat string, balanceToken string, err error)
+	GetBalance(ctx context.Context, userID uuid.UUID, address string) (balanceFiat string, balanceETH string, err error)
 }
 
 type userService struct {
 	userRepository UserRepository
 	accountService accounts.AccountService
+	priceService   price.PriceService
 }
 
-func NewUserService(userRepository UserRepository, accountService accounts.AccountService) UserService {
+func NewUserService(userRepository UserRepository, accountService accounts.AccountService, priceService price.PriceService) UserService {
 	return &userService{
 		userRepository: userRepository,
 		accountService: accountService,
+		priceService:   priceService,
 	}
 }
 
@@ -123,7 +126,7 @@ func (s *userService) AddAccount(ctx context.Context, userID uuid.UUID, password
 	return accountAddress, nil
 }
 
-func (s *userService) GetBalance(ctx context.Context, userID uuid.UUID, address string) (balanceFiat string, balanceToken string, err error) {
+func (s *userService) GetBalance(ctx context.Context, userID uuid.UUID, address string) (balanceFiat string, balanceETH string, err error) {
 	user, err := s.userRepository.Get(ctx, userID)
 
 	if err != nil {
@@ -140,7 +143,9 @@ func (s *userService) GetBalance(ctx context.Context, userID uuid.UUID, address 
 		return "", "", errors.WithMessagef(err, "could not get balance for account %s for user: %s", address, userID.String())
 	}
 
-	value := domain.NewUSDFromBigFloat(balance)
+	ethBalance := domain.ETH(balance)
+	price := s.priceService.GetPrice()
+	fiatBalance := domain.USD{Fiat: domain.NewFiatFromFloat(ethBalance.ToFloat64() * price.ToFloat64())}
 
-	return value.String(), nil
+	return fiatBalance.String(), ethBalance.String(), nil
 }

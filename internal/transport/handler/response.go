@@ -23,16 +23,16 @@ func newUserResponse(u *users.User) *UserResponse {
 }
 
 type AccountBalanceResponse struct {
-	Address      string `json:"address"`
-	BalanceFiat  string `json:"balanceFiat"`
-	BalanceToken string `json:"balanceToken"`
+	Address     string `json:"address"`
+	BalanceFiat string `json:"balanceFiat"`
+	BalanceETH  string `json:"balanceETH"`
 }
 
-func newAccountBalanceResponse(address string, balanceFiat string, balanceToken string) *AccountBalanceResponse {
+func newAccountBalanceResponse(address string, balanceFiat string, balanceETH string) *AccountBalanceResponse {
 	r := new(AccountBalanceResponse)
 	r.Address = address
 	r.BalanceFiat = balanceFiat
-	r.BalanceToken = balanceToken
+	r.BalanceETH = balanceETH
 	return r
 }
 

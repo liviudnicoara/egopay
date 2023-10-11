@@ -5,6 +5,21 @@ import (
 	"math/big"
 )
 
+type ETH big.Float
+
+func NewETH(value big.Float) ETH {
+	return ETH(value)
+}
+
+func (eth ETH) ToFloat64() float64 {
+	f, _ := (*big.Float)(&eth).Float64()
+	return f
+}
+
+func (eth ETH) String() string {
+	return fmt.Sprintf("%.4f ETH", eth.ToFloat64())
+}
+
 var multiplier = big.NewFloat(100)
 
 type Fiat int64
@@ -35,6 +50,10 @@ func (f Fiat) ToInt64() int64 {
 
 func (f Fiat) ToBigFloat() *big.Float {
 	return big.NewFloat(f.ToFloat64())
+}
+
+func (f Fiat) String() string {
+	return fmt.Sprintf("%.2f", f.ToFloat64())
 }
 
 type USD struct {
