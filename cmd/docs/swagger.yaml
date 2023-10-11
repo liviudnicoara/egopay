@@ -9,7 +9,9 @@ definitions:
     properties:
       address:
         type: string
-      balance:
+      balanceETH:
+        type: string
+      balanceFiat:
         type: string
     type: object
   handler.CreateAccountRequest:
@@ -251,7 +253,7 @@ paths:
       summary: Creates a new transfer
       tags:
       - transfers
-  /api/users:
+  /api/user:
     get:
       consumes:
       - application/json
@@ -288,46 +290,8 @@ paths:
       - ApiKeyAuth: []
       summary: Get the current user
       tags:
-      - users
-  /api/users/all:
-    get:
-      consumes:
-      - application/json
-      description: Gets the all the  users
-      operationId: all
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/handler.UserResponse'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/errors.Error'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/errors.Error'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/errors.Error'
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/errors.Error'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/errors.Error'
-      summary: Get all users
-      tags:
-      - users
-  /api/users/login:
+      - user
+  /api/user/login:
     post:
       consumes:
       - application/json
@@ -369,8 +333,8 @@ paths:
             $ref: '#/definitions/errors.Error'
       summary: Login for existing user
       tags:
-      - users
-  /api/users/signup:
+      - user
+  /api/user/signup:
     post:
       consumes:
       - application/json
@@ -404,7 +368,7 @@ paths:
             type: objects
       summary: Register a new user
       tags:
-      - users
+      - user
 securityDefinitions:
   ApiKeyAuth:
     in: header

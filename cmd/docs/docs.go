@@ -239,7 +239,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/users": {
+        "/api/user": {
             "get": {
                 "security": [
                     {
@@ -254,7 +254,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "user"
                 ],
                 "summary": "Get the current user",
                 "operationId": "current-user",
@@ -298,64 +298,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/users/all": {
-            "get": {
-                "description": "Gets the all the  users",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Get all users",
-                "operationId": "all",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/handler.UserResponse"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/errors.Error"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/errors.Error"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/errors.Error"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/errors.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/errors.Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/users/login": {
+        "/api/user/login": {
             "post": {
                 "description": "Login for existing user",
                 "consumes": [
@@ -365,7 +308,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "user"
                 ],
                 "summary": "Login for existing user",
                 "operationId": "login",
@@ -420,7 +363,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/users/signup": {
+        "/api/user/signup": {
             "post": {
                 "description": "Register a new user",
                 "consumes": [
@@ -430,7 +373,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "user"
                 ],
                 "summary": "Register a new user",
                 "operationId": "sign-up",
@@ -490,7 +433,10 @@ const docTemplate = `{
                 "address": {
                     "type": "string"
                 },
-                "balance": {
+                "balanceETH": {
+                    "type": "string"
+                },
+                "balanceFiat": {
                     "type": "string"
                 }
             }
