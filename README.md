@@ -1,3 +1,5 @@
+![](https://raw.githubusercontent.com/liviudnicoara/liviudnicoara/main/assests/egopay.png)
+
 # EgoPay - An Ethereum Go Payment Processor
 
 ## 📖 Introduction
